@@ -1,24 +1,17 @@
-
 import React, { Component } from 'react';
-import { Image, StatusBar, ToastAndroid, Button, ScrollView, StyleSheet, Text, View } from 'react-native';
-import Greet from './components/Greet';
-import Axios from 'axios';
+import {Router, Stack, Scene} from 'react-native-router-flux';
 import Home from './components/Home';
+import Greet from './components/Greet';
 
 export default class App extends Component {
-  constructor(props) {
-    super(props);
-    
-  }
-  
-  render() {
-    return (
-      <ScrollView>
-        <StatusBar animated backgroundColor="black" barStyle="light-content" />
-        <Home />
-        
-      
-      </ScrollView>
-    );
-  }
+	render() {
+		return(
+			<Router>
+			    <Stack key="root" hideNavBar={true}>
+			      <Scene key="home" component={Home} title="Login" initial={true}/>
+			      <Scene key="greet" component={Greet} title="greet"/>
+			    </Stack>
+			 </Router>
+			)
+	}
 }

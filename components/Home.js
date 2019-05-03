@@ -3,6 +3,7 @@ import React, { Component } from 'react';
 import { Image, StatusBar, ToastAndroid, Button, ScrollView, StyleSheet, Text, View } from 'react-native';
 import Greet from './Greet';
 import Axios from 'axios';
+import { Actions } from 'react-native-router-flux';
 
 const Toast = (props) => {
   if (props.visible) {
@@ -62,12 +63,15 @@ export default class Home extends Component {
 
   render() {
     return (
-      <ScrollView>
-        
+      <ScrollView>        
 
         <View style={styles.container}>
+        <Button
+            title="pindah"
+            onPress={() => Actions.greet()}
+          />
         <View style={styles.grid}>
-          <View style={styles.col}><Text>aaaaaadsda</Text></View>
+          <View style={styles.col}><Text>adsdsaaaaadsda</Text></View>
           <View style={styles.col}><Text>adsddda</Text></View>
           <View style={styles.col}><Text>adsda</Text></View>
           <View style={styles.col}><Text>adsda</Text></View>

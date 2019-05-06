@@ -1,17 +1,51 @@
-import React, { Component } from 'react';
-import {Router, Stack, Scene} from 'react-native-router-flux';
-import Home from './components/Home';
-import Greet from './components/Greet';
+import React from 'react';
+import { Button, View, Text } from 'react-native';
+import { createBottomTabNavigator, createAppContainer, createStackNavigator } from 'react-navigation'; // Version can be specified in package.json
+import Home from './components/Home'
 
-export default class App extends Component {
-	render() {
-		return(
-			<Router>
-			    <Stack key="root" hideNavBar={true}>
-			      <Scene key="home" component={Home} title="Login" initial={true}/>
-			      <Scene key="greet" component={Greet} title="greet"/>
-			    </Stack>
-			 </Router>
-			)
-	}
+import HelloStaff from './components/HelloStaff';
+import { Icon } from 'native-base';
+
+// const RootStack = createStackNavigator(
+//   {
+//     Home: {
+//       screen: Home,
+//     },
+//     Grid: {
+//       screen: Grid,
+//     },
+//   },
+//   {
+//     initialRouteName: 'Home',
+//   }
+// );
+
+const BotBar = createBottomTabNavigator({
+  Home: {
+    screen: Home,
+    navigationOptions:{
+      tabBarLabel:'LIST',
+      tabBarIcon:({tinrColor})=>(
+        <Icon name="md-menu"/>
+      )
+    }
+  },
+  Rekap: {
+    screen: HelloStaff,
+    navigationOptions:{
+      tabBarLabel:'Rekapan',
+      tabBarIcon:({tinrColor})=>(
+        <Icon name="md-menu"/>
+      )
+    }
+    
+  }
+})
+
+const AppContainer = createAppContainer(BotBar);
+
+export default class App extends React.Component {
+  render() {
+    return <AppContainer />;
+  }
 }

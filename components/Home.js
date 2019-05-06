@@ -1,174 +1,94 @@
 
 import React, { Component } from 'react';
-import { Image, StatusBar, ToastAndroid, Button, ScrollView, StyleSheet, Text, View } from 'react-native';
-import Greet from './Greet';
-import Axios from 'axios';
-import { Actions } from 'react-native-router-flux';
+import { Image, TouchableOpacity, ToastAndroid, Button, ScrollView, StyleSheet, Text, View } from 'react-native';
+import { Container, Content, Footer, Header } from 'native-base';
+import { TextInput } from 'react-native-gesture-handler';
 
-const Toast = (props) => {
-  if (props.visible) {
-    ToastAndroid.showWithGravityAndOffset(
-      props.message,
-      ToastAndroid.LONG,
-      ToastAndroid.BOTTOM,
-      25,
-      50,
-    );
-    return null;
-  }
-  return null;
-};
+
+
+
 export default class Home extends Component {
+  static navigationOptions = {
+    title: 'Home',
+  };
   constructor(props) {
     super(props);
-    this.state = {
-      murid: [
-        {
-          nama: "iman",
-          alamat: 'swadaya'
-        },
-        {
-          nama: "faris",
-          alamat: 'swasembada'
-        }
-      ],
-      staff: [],
-      sh: false
-    }
-  }
-  handleButtonPress = () => {
-    this.setState(
-      {
-        visible: true,
-      },
-      () => {
-        this.hideToast();
-      },
-    );
-  };
-
-  hideToast = () => {
-    this.setState({
-      visible: false,
-    });
-  };
-  getStaff() {
-    Axios.get("http://sampeweweh.dx.am/backend/index.php/tps/getStaff").then((response) => {
-      console.log(response.data)
-      this.setState({
-        staff: response.data
-      })
-    })
   }
 
   render() {
     return (
-      <ScrollView>        
-
-        <View style={styles.container}>
-        <Button
-            title="pindah"
-            onPress={() => Actions.greet()}
-          />
-        <View style={styles.grid}>
-          <View style={styles.col}><Text>adsdsaaaaadsda</Text></View>
-          <View style={styles.col}><Text>adsddda</Text></View>
-          <View style={styles.col}><Text>adsda</Text></View>
-          <View style={styles.col}><Text>adsda</Text></View>
-        </View>
-        <View style={styles.grid}>
-          <View style={styles.col}></View>
-          <View style={styles.col}><Text>adsda</Text></View>
-          <View style={styles.col}><Text>adsda</Text></View>
-          <View style={styles.col}><Text>adsda</Text></View>
-        </View>
-
-        <View style={{ alignSelf: 'center' }}>
-          {
-            this.state.sh ?
-              <Image
-                style={{ width: 50, height: 50, alignContent: 'flex-end' }}
-                resizeMode="contain"
-                source={{ uri: 'https://raw.githubusercontent.com/github/explore/6c6508f34230f0ac0d49e847a326429eefbfc030/topics/react-native/react-native.png' }}
-              />
-              :
-              false
-        }
-          <Button
-            title="show"
-            onPress={() => this.setState({sh:!this.state.sh})}
-          />
-        </View>
-
-        
-          <Text style={styles.welcome}>halo ini aplikasi pertamaku semoga berhasil!!!</Text>
-          <Text style={styles.instructions}>To get rstarted, edit App.js</Text>
-          {this.state.staff.map((murid) => {
-            return <Greet key={murid.alamat} nama={murid.nama} />
-
-          })}
-          <View style={styles.gret}>
-            <Button
-              onPress={this.getStaff.bind(this)}
-              title="click"
-              style={{ justifyContent: 'space-between', color: 'red' }}
-            />
-            <Toast visible={this.state.visible} message="Example" />
-            <Text onLongPress={() => alert('teken aja trus')} style={{ fontSize: 100 }}>Scroll me plz</Text>
+      <Container>
+        <Content>
+          <View style={{ flexDirection:"row",backgroundColor: "#1e272e", margin: 3, borderRadius: 10 }}>
+            <View style={{justifyContent:"center", alignItems:"center",margin:8,marginLeft:7,
+            borderRadius:50, flex:1}}>
+              <Text style={{fontSize:50,color:"white"}}>
+                1
+              </Text>
+            </View>
+            <View style={{flex:5}}>
+              <Text style={{
+                fontSize: 20, color: "white", marginTop: 5, marginLeft: 5,
+                justifyContent: "center"
+              }}>
+                Ayammm Ayammm
+              
+              </Text>
+              <View style={{ borderTopWidth: 5, borderTopColor: '#485460', flexDirection: "row", justifyContent: "space-between", margin: 5, marginLeft: 5 }}>
+                <Text style={{ justifyContent: "center", fontSize: 20, color: "white" }}>
+                  Harga : 23000
+                </Text>
+                <Text style={{
+                  marginRight: 18, justifyContent: "center",
+                  fontSize: 12, color: "white",
+                  fontStyle: "italic",marginTop:5
+                }}>
+                  06/05/2019
+                </Text>
+              </View>
+            </View>
           </View>
+        </Content>
 
-
-          <Button
-            onPress={this.handleButtonPress.bind(this)}
-            title="click"
-            style={{ justifyContent: 'space-between', color: 'red' }}
+        <View style={{ justifyContent: "center", flexDirection: "row", backgroundColor: "#95a5a6", position: "absolute", bottom: 0, flex: 1, width: "100%" }}>
+          <TextInput
+            placeholder="pengeluaran"
+            style={styles.inp}
           />
-          {/* <Greet nama="suwardiman" />
-          <Greet nama="fathir AlQassam" />
-          <Greet nama="suwardidman" /> */}
+          <TextInput
+            placeholder="Biaya"
+            style={styles.inp}
+          />
+          <TouchableOpacity
+            style={styles.butt}
+          >
+            <Text style={{ color: "#d2dae2" }}>add Data</Text>
+          </TouchableOpacity>
         </View>
-      </ScrollView>
+      </Container>
     );
   }
 }
 
 const styles = StyleSheet.create({
-  grid: {
-    flex: 1,
-    flexWrap: 'wrap',
-    flexDirection: 'row',
-    paddingTop: 4,
+  butt: {
+    marginLeft: 3,
+    color: "#d2dae2",
+    justifyContent: "center",
     alignItems: 'center',
-    justifyContent: 'space-between',
+    backgroundColor: "#1e272e",
+    borderBottomWidth: 4, borderBottomColor: "#808e9b",
+    borderTopWidth: 4, borderTopColor: "#808e9b",
+    flex: 1, borderRadius: 10
   },
-  col: {
-    flexBasis: 110,
-    borderWidth: 1,
-    alignItems: 'center',
-    borderColor: 'black',
-    height: 40,
-    margin: 3,
-  },
-  container: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-    backgroundColor: '#F5FCFF',
 
+  inp: {
+    marginLeft: 3,
+    color: "black",
+    backgroundColor: "#d2dae2",
+    borderBottomWidth: 4, borderBottomColor: "#808e9b",
+    borderTopWidth: 4, borderTopColor: "#808e9b",
+    flex: 1, borderRadius: 10
   },
-  gret: {
-    flex: 1,
-    flexDirection: 'column',
-    marginRight: 10,
-  },
-  welcome: {
-    fontSize: 10,
-    textAlign: 'center',
-    margin: 10,
-  },
-  instructions: {
-    textAlign: 'center',
-    color: '#333333',
-    marginBottom: 5,
-  },
+
 });

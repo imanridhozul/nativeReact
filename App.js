@@ -5,6 +5,7 @@ import Home from './components/Home'
 
 import HelloStaff from './components/HelloStaff';
 import { Icon } from 'native-base';
+import MapsAwal from './components/MapsAwal';
 
 // const RootStack = createStackNavigator(
 //   {
@@ -26,7 +27,7 @@ const BotBar = createBottomTabNavigator({
     navigationOptions:{
       tabBarLabel:'LIST',
       tabBarIcon:({tinrColor})=>(
-        <Icon name="md-menu"/>
+        <Icon name="md-jet"/>
       )
     }
   },
@@ -35,11 +36,20 @@ const BotBar = createBottomTabNavigator({
     navigationOptions:{
       tabBarLabel:'Rekapan',
       tabBarIcon:({tinrColor})=>(
-        <Icon name="md-menu"/>
+        <Icon name="md-search"/>
       )
-    }
-    
+    }    
+  },
+  Awal: {
+    screen: MapsAwal,
+    navigationOptions:{
+      tabBarLabel:'Maps',
+      tabBarIcon:({tinrColor})=>(
+        <Icon name="md-search"/>
+      )
+    }    
   }
+
 })
 
 const AppContainer = createAppContainer(BotBar);

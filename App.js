@@ -26,7 +26,7 @@ const BotBar = createBottomTabNavigator({
     screen: Home,
     navigationOptions:{
       tabBarLabel:'LIST',
-      tabBarIcon:({tinrColor})=>(
+      tabBarIcon:({tintColor})=>(
         <Icon name="md-jet"/>
       )
     }
@@ -35,7 +35,7 @@ const BotBar = createBottomTabNavigator({
     screen: HelloStaff,
     navigationOptions:{
       tabBarLabel:'Rekapan',
-      tabBarIcon:({tinrColor})=>(
+      tabBarIcon:({tintColor})=>(
         <Icon name="md-search"/>
       )
     }    
@@ -44,13 +44,24 @@ const BotBar = createBottomTabNavigator({
     screen: MapsAwal,
     navigationOptions:{
       tabBarLabel:'Maps',
-      tabBarIcon:({tinrColor})=>(
+      tabBarIcon:({tintColor})=>(
         <Icon name="md-search"/>
       )
     }    
   }
+}, {
+  tabBarOptions: {
+    activeTintColor: '#e91e63',
+    labelStyle: {
+      fontSize: 12,
+    },
+    style: {
+      backgroundColor: '#353b48',
+    },
+  }
+}
 
-})
+)
 
 const AppContainer = createAppContainer(BotBar);
 

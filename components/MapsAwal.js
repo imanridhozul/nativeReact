@@ -11,6 +11,15 @@ class MapsAwal extends Component {
       latitude: null,
       longitude: null,
       error: null,
+      loc: "-6.270565,106.759550",
+      markers : [
+        {
+          lat :  -8.588570,
+          long : 116.094998,
+          title : "rumah"
+        },      
+
+      ]
     };
   }
 
@@ -29,43 +38,54 @@ class MapsAwal extends Component {
       { enableHighAccuracy: false, timeout: 200000, maximumAge: 1000 },
     );
   }
-
+  onReg(target) {
+    console.warn(target.longitude, "target")
+    var cord = {
+      lat: target.latitude,
+      long: target.longitude,
+      title : "tesssss"
+    };
+    var tmp = this.state.markers.slice();
+    tmp.push(cord)
+    this.setState({
+      markers : tmp
+    })
+  }
 
   render() {
     return (
       <Container>
         <Content>
-          <View style={{justifyContent:"space-between"}}>
-          {/* <GooglePlacesAutocomplete
-    placeholder='Enter Location'
-    minLength={2}
-    autoFocus={false}
-    fetchDetails
-    listViewDisplayed='auto'
-    query={{
-         key: 'AIzaSyBIM6nu1s_-HNEzKmQfRjbEBhqavUsYjIc',
-         language: 'en',
-         types: 'geocode',
-         -8.593656
-         116.104610
-    }}
-    currentLocation={false} /> */}
-            <MapView style={{height:350}} initialRegion={{
-              latitude: -6.270565,
-              longitude: 106.759550,
-              latitudeDelta: 1,
-              longitudeDelta: 1
-            }}>
+          <View style={{ justifyContent: "space-between" }}>         
+            <MapView style={{ height: 350 }}
+              initialRegion={{
+                latitude: -8.593656,
+                longitude: 116.104610,
+                latitudeDelta: 1,
+                longitudeDelta: 1,
+              }}
+              onPress={(e) => this.onReg(e.nativeEvent.coordinate)}
+            >
 
-              {!!this.state.latitude && !!this.state.longitude && <MapView.Marker
-                coordinate={{ "latitude": this.state.latitude, "longitude": this.state.longitude }}
-                title={"Your Location"}
-              />}
+              {this.state.markers.map(marker => (
+                <MapView.Marker
+                  coordinate={{ "latitude":marker.lat, "longitude": marker.long }}
+                  title={marker.title}
+                  description={"naah"}
+                />
+              ))
+              }
+              {/* <MapView.Marker
+                coordinate={{ "latitude": -8.588570, "longitude": 116.094998 }}
+                title={"Hell"}
+                description={"adalah unrams"}
+              /> */}
+
 
             </MapView>
-          
+
           </View>
-        </Content>      
+        </Content>
       </Container>
     );
   }

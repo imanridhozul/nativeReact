@@ -31,13 +31,18 @@ export default class Home extends Component {
     months[d.getMonth()];
     var tgl = d.getDate() + ":" + months[d.getMonth()] + ":" + d.getFullYear()
     db.ref('/users/01/' + tgl).on('value', snapshot => {
-      let keys = Object.keys(snapshot.val());
-      let itemData = Object.values(snapshot.val());
-      // console.warn(keys)
-      this.setState({
-        curentPengeluaran: itemData,
-        detik: keys
-      })
+      if (snapshot.val() === null) {
+        console.warn("ksong");
+      }
+      else {
+        let keys = Object.keys(snapshot.val());
+        let itemData = Object.values(snapshot.val());
+        // console.warn(keys)
+        this.setState({
+          curentPengeluaran: itemData,
+          detik: keys
+        })
+      }
     });
   }
   gos = () => {
@@ -106,26 +111,30 @@ export default class Home extends Component {
       edit: false,
       pengeluaran: "",
       biaya: ""
-    })    
+    })
   }
 
 
   render() {
     return (
       <Container>
-        <View style={{backgroundColor: "#7f8fa6",flex: 1,flexDirection: 'column',justifyContent: 'space-between',}}>
-          <View style={{flexDirection: "row", justifyContent:"space-between",alignItems:"center",
-           backgroundColor: "#485460", width: "100%",borderBottomWidth:2,borderBottomColor:"#1e272e"}}>
+        <View style={{ backgroundColor: "#7f8fa6", flex: 1, flexDirection: 'column', justifyContent: 'space-between', }}>
+          <View style={{
+            flexDirection: "row", justifyContent: "space-between", alignItems: "center",
+            backgroundColor: "#485460", width: "100%", borderBottomWidth: 2, borderBottomColor: "#1e272e"
+          }}>
 
-            <View style={{ justifyContent:"center",alignItems:"center",
-              flexDirection: "row", marginLeft:15,}}>
-              <Icon name="md-calendar" style={{ fontSize: 25,color:"white" }} />
-              <Text style={{ marginLeft: 10, fontSize: 25,color:"white" }}>
+            <View style={{
+              justifyContent: "center", alignItems: "center",
+              flexDirection: "row", marginLeft: 15,
+            }}>
+              <Icon name="md-calendar" style={{ fontSize: 25, color: "white" }} />
+              <Text style={{ marginLeft: 10, fontSize: 25, color: "white" }}>
                 {this.state.waktu}
               </Text>
             </View>
 
-            <Icon name="logo-freebsd-devil" style={{marginRight:30,fontSize: 25,color:"white"}} />
+            <Icon name="logo-freebsd-devil" style={{ marginRight: 30, fontSize: 25, color: "white" }} />
 
           </View>
           <Content>
@@ -224,8 +233,8 @@ export default class Home extends Component {
                 <TouchableOpacity
                   style={styles.butt}
                   onPress={this.gos}>
-                  <Icon name="md-shuffle"/>
-                  <Text style={{ color: "black", marginLeft:5 }}>add Data</Text>
+                  <Icon name="md-shuffle" />
+                  <Text style={{ color: "black", marginLeft: 5 }}>add Data</Text>
                 </TouchableOpacity>
             }
 
@@ -243,7 +252,7 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     alignItems: 'center',
     backgroundColor: "#6ab04c",
-    flexDirection:"row",
+    flexDirection: "row",
     borderBottomWidth: 4, borderBottomColor: "#353b48",
     borderTopWidth: 4, borderTopColor: "#353b48",
     flex: 1, borderRadius: 10

@@ -24,7 +24,7 @@ import MapsAwal from './components/MapsAwal';
 const BotBar = createBottomTabNavigator({
   Home: {
     screen: Home,
-    navigationOptions:{
+    navigationOptions:{     
       tabBarLabel:'LIST',
       tabBarIcon:({tintColor})=>(
         <Icon name="md-jet"/>
@@ -42,7 +42,9 @@ const BotBar = createBottomTabNavigator({
   },
   Awal: {
     screen: MapsAwal,
+    
     navigationOptions:{
+      tabBarVisible : false,
       tabBarLabel:'Maps',
       tabBarIcon:({tintColor})=>(
         <Icon name="md-search"/>

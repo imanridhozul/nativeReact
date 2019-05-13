@@ -6,10 +6,15 @@ import { TextInput } from 'react-native-gesture-handler';
 import { db } from './config/ConfigDB'
 
 
+
 const screenHeight = Math.round(Dimensions.get('window').height);
 export default class Home extends Component {
+
   constructor(props) {
     super(props);
+    console.ignoredYellowBox = [
+      'Setting a timer'
+    ];
     const screenHeight = Math.round(Dimensions.get('window').height);
     var d = new Date();
     var months = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
@@ -22,7 +27,9 @@ export default class Home extends Component {
       detik: [],
       edit: false,
       curentID: "",
-      waktu: tgl
+      waktu: tgl,
+      tt: 0
+
     }
   }
   componentDidMount() {
@@ -113,7 +120,14 @@ export default class Home extends Component {
       biaya: ""
     })
   }
+  getTotal = () => {
+    var a = 0;
+    for (let i = 0; i < this.state.curentPengeluaran.length; i++) {
+      a = a + parseInt(this.state.curentPengeluaran[i].b);
+    }
+    return a;
 
+  }
 
   render() {
     return (
@@ -141,8 +155,8 @@ export default class Home extends Component {
             {
               this.state.curentPengeluaran.map((d, i) => {
                 return (
-                  <View key={i} style={{ flexDirection: "row", backgroundColor: "#1e272e", margin: 3, borderRadius: 10 }}>
 
+                  <View key={i} style={{ flexDirection: "row", backgroundColor: "#1e272e", margin: 3, borderRadius: 10 }}>
                     <View style={{
                       justifyContent: "center", alignItems: "center", margin: 8, marginLeft: 7,
                       borderRadius: 40, flex: 1
@@ -204,6 +218,16 @@ export default class Home extends Component {
               })
             }
 
+            <View style={{
+              justifyContent: "center", flexDirection: "row",
+              width: "100%", alignItems: "center", height: 35
+            }}>
+              <Text style={[styles.textTot, { alignItems: "center", marginLeft: 25, marginRight: 25 }]}>
+                >>  Total : {
+                  this.getTotal()
+                }
+              </Text>
+            </View>
           </Content>
 
           <View style={{
@@ -264,6 +288,13 @@ const styles = StyleSheet.create({
     backgroundColor: "#d2dae2",
     borderBottomWidth: 4, borderBottomColor: "#353b48",
     borderTopWidth: 4, borderTopColor: "#353b48",
+    flex: 1, borderRadius: 10
+  },
+  textTot: {
+    marginLeft: 3,
+    backgroundColor: "#4b6584",
+    color: "white", fontSize: 25,
+    borderBottomWidth: 4, borderBottomColor: "white",
     flex: 1, borderRadius: 10
   },
 

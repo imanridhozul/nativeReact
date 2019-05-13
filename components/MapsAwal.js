@@ -21,7 +21,7 @@ class MapsAwal extends Component {
     };
   }
 
-  componentDidMount() {
+  componentDidMount() {   
     navigator.geolocation.getCurrentPosition(
       (position) => {
         console.warn("wokeeey");

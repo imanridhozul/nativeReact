@@ -13,9 +13,9 @@ class DataRekap extends Component {
             createFromLocation: '~www/catat.db',
         });
         var d = new Date();
-        // var year = toString(d.getFullYear());
-        
-        // console.warn(year);
+        var months = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
+        months[d.getMonth()];
+        var tgl = d.getDate() + "/" + months[d.getMonth()] + "/" + d.getFullYear();
         this.state = {
             language: "",
             db,
@@ -23,7 +23,8 @@ class DataRekap extends Component {
             bln: "",
             tgl: "",
             dataTahun: [],
-            dataCurrentYear: []
+            dataCurrentYear: [],
+            waktu:tgl
         };
     }
     componentDidMount() {
@@ -57,8 +58,8 @@ class DataRekap extends Component {
             });
         });
     }
-    pickerChange=(itemValue,itemIndex)=>{        
-        this.setState({ thn: itemValue },()=>this.refreshData())
+    pickerChange = (itemValue, itemIndex) => {
+        this.setState({ thn: itemValue }, () => this.refreshData())
     }
 
     render() {
@@ -67,32 +68,32 @@ class DataRekap extends Component {
                 <View style={{ backgroundColor: "black", flex: 1, flexDirection: 'column', justifyContent: 'space-between', }}>
                     <View style={{
                         flexDirection: "row", justifyContent: "space-between", alignItems: "center",
-                        backgroundColor: "#2d3436", width: "100%", borderBottomWidth: 0.2, borderBottomColor: "white"
+                        backgroundColor: "#2d3436", width: "100%",height:50
                     }}>
                         <View style={{
                             justifyContent: "center", alignItems: "center",
                             flexDirection: "row", marginLeft: 15,
                         }}>
-                            <Icon name="logo-usd" style={{ marginRight: 15, fontSize: 25, color: "white" }} />
-                            <Text style={{ marginLeft: 10, fontSize: 25, color: "white" }}>
+                            <Icon onPress={()=>this.props.navigation.openDrawer()} name="md-menu" style={{ fontSize: 35, color: "#FF9800" }} />
+                            <Text style={{ marginLeft: 10, fontSize: 25, color: "#FF9800" }}>
                                 {this.state.waktu}
                             </Text>
                         </View>
-                        <Icon name="logo-usd" style={{ marginRight: 15, fontSize: 25, color: "white" }} />
+                        <Icon name="logo-freebsd-devil" style={{ marginRight: 15, fontSize: 25, color: "#FF9800" }} />
                     </View>
-                    <View style={{ borderBottomColor: "white", borderBottomWidth: 0.3, flexDirection: "row", alignItems: "center" }}>
+                    <View style={{flexDirection: "row", alignItems: "center" }}>
                         <Text style={{
                             color: "white", marginLeft: 4, marginRight: 10,
-                            borderColor: "black", flexDirection: "row"
+                            flexDirection: "row"
                         }}>
                             Selected Year
                         </Text>
                         <View style={{ backgroundColor: "#2d3436", color: "white", flexDirection: "row", alignItems: "center" }}>
-                            <Icon name="md-arrow-round-down" style={{ fontSize: 10, marginLeft: 10, backgroundColor: "#2d3436", color: "white" }} />
+                            <Icon name="md-arrow-dropdown-circle" style={{ fontSize: 15, marginLeft: 10, backgroundColor: "#2d3436", color: "white" }} />
                             <Picker
                                 selectedValue={this.state.thn}
                                 style={{ height: 30, width: "80%", backgroundColor: "#2d3436", color: "white" }}
-                                onValueChange={(itemValue, itemIndex) => this.pickerChange(itemValue,itemIndex)}>
+                                onValueChange={(itemValue, itemIndex) => this.pickerChange(itemValue, itemIndex)}>
                                 <Picker.Item label="Year" value="" />
                                 {
                                     this.state.dataTahun.map(t => {
@@ -114,15 +115,17 @@ class DataRekap extends Component {
                                                 width: "100%",
                                                 marginLeft: 15, marginRight: 15, marginTop: 3,
                                             }}>
-                                                <View style={{ flexDirection: "row",backgroundColor:"#2d3436",borderTopLeftRadius: 7, borderTopRightRadius:7}}>
-                                                    <Icon name="logo-usd" style={{ marginLeft: 15, fontSize: 34, color: "white" }} />
+                                                <View style={{ flexDirection: "row", backgroundColor: "#2d3436", borderTopLeftRadius: 7, 
+                                                borderTopRightRadius: 7, alignItems:"center" }}>
+                                                    <Icon name="md-calendar" style={{ marginLeft: 15, fontSize: 20, color: "white" }} />
                                                     <Text style={{
                                                         color: "white", marginLeft: 10, fontSize: 25,
                                                         justifyContent: "center", alignItems: "center"
                                                     }}>{d.bulan}</Text>
                                                 </View>
-                                                <View style={{ flexDirection: "row",backgroundColor: "#f5f6fa",borderBottomLeftRadius: 7, borderBottomRightRadius:7}}>
-                                                    <Icon name="logo-usd" style={{ marginLeft: 15, fontSize: 34, color: "#353b48" }} />
+                                                <View style={{ flexDirection: "row", backgroundColor: "#f5f6fa", borderBottomLeftRadius: 7, 
+                                                borderBottomRightRadius: 7,alignItems:"center" }}>
+                                                    <Icon name="md-calculator" style={{ marginLeft: 15, fontSize: 20, color: "#353b48" }} />
                                                     <Text style={{
                                                         color: "#353b48", marginLeft: 10, fontSize: 25,
                                                         justifyContent: "center", alignItems: "center"
@@ -152,7 +155,7 @@ const styles = StyleSheet.create({
         flexWrap: 'wrap',
         flexDirection: 'row',
         alignItems: 'center',
-        marginTop : 5,
+        marginTop: 5,
         justifyContent: 'space-between',
     },
     col: {

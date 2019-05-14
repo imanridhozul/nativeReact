@@ -5,8 +5,10 @@ import { TextInput } from 'react-native-gesture-handler';
 import { openDatabase } from 'react-native-sqlite-storage';
 // select sum(biaya) as biaya,tahun from catatan group by tahun
 // select sum(biaya) as biaya,bulan from catatan where tahun='2019' group by bulan
+// select sum(biaya) as biaya,tanggal,bulan from catatan where tahun='2019' and bulan='May' group by tanggal //ini biaya perbulannya ada tanggal2nya
+// select * from catatan where tanggal='13/may/2019' per tangggal
 const screenHeight = Math.round(Dimensions.get('window').height);
-export default class ViewAllUser extends Component {    
+export default class ViewAllUser extends Component {       
     constructor(props) {        
         super(props);
         const db = openDatabase({
@@ -124,23 +126,22 @@ export default class ViewAllUser extends Component {
     render() {
         return (
             <Container>                
-                <View style={{ backgroundColor: "#7f8fa6", flex: 1, flexDirection: 'column', justifyContent: 'space-between', }}>
+                <View style={{ backgroundColor: "black", flex: 1, flexDirection: 'column', justifyContent: 'space-between', }}>
                     <View style={{
                         flexDirection: "row", justifyContent: "space-between", alignItems: "center",
-                        backgroundColor: "#485460", width: "100%", borderBottomWidth: 2, borderBottomColor: "#1e272e"
+                        backgroundColor: "#1e272e", width: "100%", borderBottomWidth: 2, borderBottomColor: "#1e272e"
                     }}>
 
                         <View style={{
                             justifyContent: "center", alignItems: "center",
                             flexDirection: "row", marginLeft: 15,
                         }}>
-                            <Icon name="md-calendar" style={{ fontSize: 25, color: "white" }} />
-                            <Text style={{ marginLeft: 10, fontSize: 25, color: "white" }}>
+                            <Icon onPress={()=>this.props.navigation.openDrawer()} name="md-menu" style={{ fontSize: 35, color: "#FF9800" }} />
+                            <Text style={{ marginLeft: 10, fontSize: 25, color: "#FF9800" }}>
                                 {this.state.waktu}
                             </Text>
                         </View>
-
-                        <Icon name="logo-freebsd-devil" style={{ marginRight: 30, fontSize: 25, color: "white" }} />
+                        <Icon name="logo-freebsd-devil" style={{ marginRight: 15, fontSize: 25, color: "#FF9800" }} />
 
                     </View>
                     <Content>
@@ -171,12 +172,12 @@ export default class ViewAllUser extends Component {
                                                     <TouchableOpacity
                                                         onPress={() => this.getById(d.id)}
                                                         style={{ justifyContent: "center", alignItems: "center", marginLeft: 3 }}>
-                                                        <Icon name="md-create" style={{ color: "#f0932b" }} />
+                                                        <Icon name="md-create" style={{ color: "#FF9800" }} />
                                                     </TouchableOpacity>
                                                     <TouchableOpacity
                                                         onPress={() => this.deleteData(d.id)}
                                                         style={{ justifyContent: "center", alignItems: "center" }}>
-                                                        <Icon name="trash" style={{ color: "#e55039" }} />
+                                                        <Icon name="trash" style={{ color: "#FF9800" }} />
                                                     </TouchableOpacity>
                                                 </View>
                                             </View>
@@ -265,7 +266,7 @@ const styles = StyleSheet.create({
         color: "#2f3640",
         justifyContent: "center",
         alignItems: 'center',
-        backgroundColor: "#6ab04c",
+        backgroundColor: "#FF9800",
         flexDirection: "row",
         borderBottomWidth: 4, borderBottomColor: "#353b48",
         borderTopWidth: 4, borderTopColor: "#353b48",
@@ -282,9 +283,9 @@ const styles = StyleSheet.create({
     },
     textTot: {
         marginLeft: 3,
-        backgroundColor: "#4b6584",
-        color: "white", fontSize: 25,
-        borderBottomWidth: 4, borderBottomColor: "white",
+        backgroundColor: "#1e272e",
+        color: "#FF9800", fontSize: 25,
+        borderBottomWidth: 4, borderBottomColor: "#FF9800",
         flex: 1, borderRadius: 10
     },
 

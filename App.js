@@ -1,5 +1,5 @@
 import React from 'react';
-import { StyleSheet, Button, View, Text, StatusBar } from 'react-native';
+import { Image,StyleSheet, Button, View, Text, StatusBar } from 'react-native';
 import { createAppContainer, createDrawerNavigator, createStackNavigator, DrawerItems } from 'react-navigation'; // Version can be specified in package.json
 
 import HelloStaff from './components/HelloStaff';
@@ -14,10 +14,13 @@ const CustomContent = (props) => {
   return (
     <Container>
       {/* <StatusBar backgroundColor="black" barStyle="light-content" /> */}
-      <Header style={{ backgroundColor: '#2ecc71', height: 90 }}>
+      <Header style={{ backgroundColor: 'white', height: 100 }}>
         <StatusBar backgroundColor="black" barStyle="light-content" />
+        <View style={{justifyContent:"center", alignItems:"center"}}>
+         <Image source={require('./assets/logo.png')} style={{width: 150, height: 100}} />
+         </View>
       </Header>
-      <Content>
+      <Content style={{ backgroundColor: '#1e272e' }}>
         <DrawerItems {...props} />
       </Content>
     </Container>
@@ -38,20 +41,20 @@ const styles = StyleSheet.create({
 });
 const MyDrawerNavigator = createDrawerNavigator({
   Home: {
-    screen: DataRekap,
+    screen: ViewAllUser,
     navigationOptions: {
       drawerLabel: 'Beranda',
       drawerIcon: ({ tintColor }) => (
-        <Icon name="home" />
+        <Icon name="md-home" style={{ fontSize: 25, color: tintColor }} />
       )
     }
   },
   Catatan: {
-    screen: ViewAllUser,
+    screen: DataRekap,
     navigationOptions: {
       drawerLabel: 'Catatan',
       drawerIcon: ({ tintColor }) => (
-        <Icon name="home" />
+        <Icon name="md-copy" style={{ fontSize: 25, color: tintColor }} />
       )
     }
   },
@@ -60,14 +63,14 @@ const MyDrawerNavigator = createDrawerNavigator({
     navigationOptions: {
       drawerLabel: 'Maps',
       drawerIcon: ({ tintColor }) => (
-        <Icon name="home" />
+        <Icon name="md-flag" style={{ fontSize: 25, color: tintColor }} />
       )
     }
   },
   Bul: {
     screen: DataBulan,
     navigationOptions: {
-      drawerLabel: ()=>null,      
+      drawerLabel: () => null,
     }
   },
 
@@ -78,8 +81,18 @@ const MyDrawerNavigator = createDrawerNavigator({
     contentComponent: CustomContent,
     drawerOpenRoute: 'DrawerOpen',
     drawerCloseRoute: 'DrawerClose',
-    drawerToggleRoute: 'DrawerToggle'
-  });
+    drawerToggleRoute: 'DrawerToggle',
+    contentOptions: {
+      inactiveTintColor:"white",
+      activeBackgroundColor: "black",    
+      activeTintColor: '#FF9800',
+      labelStyle: {
+        color: "white"
+      }
+    }
+  },
+
+);
 
 
 const AppContainer = createAppContainer(MyDrawerNavigator);

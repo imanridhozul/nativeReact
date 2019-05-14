@@ -5,6 +5,8 @@ import HelloStaff from './components/HelloStaff';
 import { Icon } from 'native-base';
 import MapsAwal from './components/MapsAwal';
 import ViewAllUser from './components/ViewAllUser';
+import DataRekap from './components/DataRekap';
+import DataBulan from './components/DataBulan';
 
 // const RootStack = createStackNavigator(
 //   {
@@ -31,7 +33,7 @@ const BotBar = createBottomTabNavigator({
     }
   },
   Rekap: {
-    screen: HelloStaff,
+    screen: DataRekap,
     navigationOptions:{
       tabBarLabel:'Catatan',
       tabBarIcon:({tintColor})=>(
@@ -47,6 +49,12 @@ const BotBar = createBottomTabNavigator({
       tabBarIcon:({tintColor})=>(
         <Icon name="md-search"/>
       )
+    }    
+  },
+  Bul: {
+    screen: DataBulan,    
+    navigationOptions:{
+      tabBarLabel:()=>null,     
     }    
   }
 }, {

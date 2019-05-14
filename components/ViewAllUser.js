@@ -60,13 +60,15 @@ export default class ViewAllUser extends Component {
         var thn = d.getFullYear();
         var bln = months[d.getMonth()];
         var detik = d.getHours() + "/" + d.getMinutes() + "/" + d.getSeconds();
+        // var thn="2018";
+        // var tgl ="12/July/2018";
         // console.warn(tgl,thn,bln,detik,this.state.pengeluaran,this.state.biaya);       
         this.state.db.transaction(tx => {
             tx.executeSql("insert into catatan (tanggal,tahun,bulan,jam,catatan,biaya)" +
                 "values ('" + tgl + "','" + thn + "','" + bln + "','" + detik + "','" + this.state.pengeluaran + "','" + this.state.biaya + "')",
                 [],
                 (tx, results) => {
-                    console.warn("berhasil tambah data");
+                   // console.warn("berhasil tambah data");
                     this.refreshData();
                 });
         });
@@ -77,7 +79,7 @@ export default class ViewAllUser extends Component {
             tx.executeSql("DELETE FROM  catatan where id=?",
                 [id],
                 (tx, results) => {
-                    console.warn("berhasil");
+                    //console.warn("berhasil");
                     this.refreshData();
                 });
         });
@@ -110,7 +112,7 @@ export default class ViewAllUser extends Component {
                         pengeluaran: ""
                     })
                     this.refreshData();
-                    console.warn("berhasil update data");
+                    //console.warn("berhasil update data");
                 });
         });
     }

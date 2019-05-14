@@ -1,80 +1,91 @@
 import React from 'react';
-import { Button, View, Text } from 'react-native';
-import { createBottomTabNavigator, createAppContainer, createStackNavigator } from 'react-navigation'; // Version can be specified in package.json
+import { StyleSheet, Button, View, Text, StatusBar } from 'react-native';
+import { createAppContainer, createDrawerNavigator, createStackNavigator, DrawerItems } from 'react-navigation'; // Version can be specified in package.json
+
 import HelloStaff from './components/HelloStaff';
-import { Icon } from 'native-base';
+import { Icon, Container, Header, Content } from 'native-base';
 import MapsAwal from './components/MapsAwal';
 import ViewAllUser from './components/ViewAllUser';
 import DataRekap from './components/DataRekap';
 import DataBulan from './components/DataBulan';
 
-// const RootStack = createStackNavigator(
-//   {
-//     Home: {
-//       screen: Home,
-//     },
-//     Grid: {
-//       screen: Grid,
-//     },
-//   },
-//   {
-//     initialRouteName: 'Home',
-//   }
-// );
 
-const BotBar = createBottomTabNavigator({
+const CustomContent = (props) => {
+  return (
+    <Container>
+      {/* <StatusBar backgroundColor="black" barStyle="light-content" /> */}
+      <Header style={{ backgroundColor: '#2ecc71', height: 90 }}>
+        <StatusBar backgroundColor="black" barStyle="light-content" />
+      </Header>
+      <Content>
+        <DrawerItems {...props} />
+      </Content>
+    </Container>
+  )
+}
+const styles = StyleSheet.create({
+  button: {
+    flexDirection: 'row',
+    width: '100%',
+    alignItems: 'center',
+    height: '100%',
+  },
+
+  buttonText: {
+    padding: 20,
+    color: 'black'
+  }
+});
+const MyDrawerNavigator = createDrawerNavigator({
   Home: {
     screen: ViewAllUser,
-    navigationOptions:{     
-      tabBarLabel:'LIST',
-      tabBarIcon:({tintColor})=>(
-        <Icon name="md-jet"/>
+    navigationOptions: {
+      drawerLabel: 'Beranda',
+      drawerIcon: ({ tintColor }) => (
+        <Icon name="home" />
       )
     }
   },
-  Rekap: {
+  Catatan: {
     screen: DataRekap,
-    navigationOptions:{
-      tabBarLabel:'Catatan',
-      tabBarIcon:({tintColor})=>(
-        <Icon name="md-search"/>
+    navigationOptions: {
+      drawerLabel: 'Catatan',
+      drawerIcon: ({ tintColor }) => (
+        <Icon name="home" />
       )
-    }    
+    }
   },
-  Awal: {
-    screen: MapsAwal,    
-    navigationOptions:{
-      tabBarVisible : false,
-      tabBarLabel:'Maps',
-      tabBarIcon:({tintColor})=>(
-        <Icon name="md-search"/>
+  Maps: {
+    screen: MapsAwal,
+    navigationOptions: {
+      drawerLabel: 'Maps',
+      drawerIcon: ({ tintColor }) => (
+        <Icon name="home" />
       )
-    }    
+    }
   },
   Bul: {
-    screen: DataBulan,    
-    navigationOptions:{
-      tabBarLabel:()=>null,     
-    }    
-  }
+    screen: DataBulan,
+    navigationOptions: {
+      drawerLabel: ()=>null,      
+    }
+  },
+
+
 }, {
-  tabBarOptions: {
-    activeTintColor: '#e91e63',
-    labelStyle: {
-      fontSize: 12,
-    },
-    style: {
-      backgroundColor: '#353b48',
-    },
-  }
-}
+    initialRouteName: 'Home',
+    drawerPosition: 'left',
+    contentComponent: CustomContent,
+    drawerOpenRoute: 'DrawerOpen',
+    drawerCloseRoute: 'DrawerClose',
+    drawerToggleRoute: 'DrawerToggle'
+  });
 
-)
 
-const AppContainer = createAppContainer(BotBar);
-
+const AppContainer = createAppContainer(MyDrawerNavigator);
 export default class App extends React.Component {
   render() {
     return <AppContainer />;
   }
 }
+

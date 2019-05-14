@@ -1,12 +1,12 @@
 import React, { Component } from 'react';
-import { Image, TouchableOpacity, Dimensions, Button, ScrollView, StyleSheet, Text, View } from 'react-native';
+import { StatusBar,Image, TouchableOpacity, Dimensions, Button, ScrollView, StyleSheet, Text, View } from 'react-native';
 import { Container, Content, Footer, Header, Icon } from 'native-base';
 import { TextInput } from 'react-native-gesture-handler';
 import { openDatabase } from 'react-native-sqlite-storage';
 
 const screenHeight = Math.round(Dimensions.get('window').height);
-export default class ViewAllUser extends Component {
-    constructor(props) {
+export default class ViewAllUser extends Component {    
+    constructor(props) {        
         super(props);
         const db = openDatabase({
             name: 'catat.db',
@@ -118,7 +118,7 @@ export default class ViewAllUser extends Component {
     }
     render() {
         return (
-            <Container>
+            <Container>                
                 <View style={{ backgroundColor: "#7f8fa6", flex: 1, flexDirection: 'column', justifyContent: 'space-between', }}>
                     <View style={{
                         flexDirection: "row", justifyContent: "space-between", alignItems: "center",

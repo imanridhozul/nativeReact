@@ -1,11 +1,10 @@
 import React from 'react';
 import { Button, View, Text } from 'react-native';
 import { createBottomTabNavigator, createAppContainer, createStackNavigator } from 'react-navigation'; // Version can be specified in package.json
-import Home from './components/Home'
-
 import HelloStaff from './components/HelloStaff';
 import { Icon } from 'native-base';
 import MapsAwal from './components/MapsAwal';
+import ViewAllUser from './components/ViewAllUser';
 
 // const RootStack = createStackNavigator(
 //   {
@@ -23,7 +22,7 @@ import MapsAwal from './components/MapsAwal';
 
 const BotBar = createBottomTabNavigator({
   Home: {
-    screen: Home,
+    screen: ViewAllUser,
     navigationOptions:{     
       tabBarLabel:'LIST',
       tabBarIcon:({tintColor})=>(
@@ -34,15 +33,14 @@ const BotBar = createBottomTabNavigator({
   Rekap: {
     screen: HelloStaff,
     navigationOptions:{
-      tabBarLabel:'Rekapan',
+      tabBarLabel:'Catatan',
       tabBarIcon:({tintColor})=>(
         <Icon name="md-search"/>
       )
     }    
   },
   Awal: {
-    screen: MapsAwal,
-    
+    screen: MapsAwal,    
     navigationOptions:{
       tabBarVisible : false,
       tabBarLabel:'Maps',

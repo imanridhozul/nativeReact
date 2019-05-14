@@ -19,7 +19,7 @@ export default class Home extends Component {
     var d = new Date();
     var months = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
     months[d.getMonth()];
-    var tgl = d.getDate() + "/" + months[d.getMonth()] + "/" + d.getFullYear()
+    var tgl = d.getDate() + "/" + months[d.getMonth()] + "/" + d.getFullYear();
     this.state = {
       pengeluaran: "",
       biaya: "",

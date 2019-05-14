@@ -1,6 +1,8 @@
 import React, { Component } from 'react';
-import { Button,View, Text, Picker } from 'react-native';
+import { TouchableOpacity, View, Text, Picker, StyleSheet } from 'react-native';
 import { openDatabase } from 'react-native-sqlite-storage';
+import { Container, Content, Footer, Header, Icon } from 'native-base';
+
 
 class DataRekap extends Component {
     constructor(props) {
@@ -10,13 +12,18 @@ class DataRekap extends Component {
             location: 'default',
             createFromLocation: '~www/catat.db',
         });
+        var d = new Date();
+        // var year = toString(d.getFullYear());
+        
+        // console.warn(year);
         this.state = {
             language: "",
             db,
-            thn: "",
+            thn: "2019",
             bln: "",
             tgl: "",
-            dataTahun: []
+            dataTahun: [],
+            dataCurrentYear: []
         };
     }
     componentDidMount() {
@@ -37,48 +44,123 @@ class DataRekap extends Component {
                 });
             });
         });
+        this.state.db.transaction(tx => {
+            tx.executeSql("select sum(biaya) as biaya,bulan from catatan where tahun=? group by bulan", [this.state.thn], (tx, results) => {
+                var temp = [];
+                let tot = 0;
+                for (let i = 0; i < results.rows.length; ++i) {
+                    temp.push(results.rows.item(i));
+                }
+                this.setState({
+                    dataCurrentYear: temp,
+                });
+            });
+        });
+    }
+    pickerChange=(itemValue,itemIndex)=>{        
+        this.setState({ thn: itemValue },()=>this.refreshData())
     }
 
     render() {
         return (
-            <View>
-                <Picker
-                    selectedValue={this.state.language}
-                    style={{ height: 50, width: 100 }}
-                    onValueChange={(itemValue, itemIndex) =>
-                        this.setState({ language: itemValue })
-                    }>
+            <Container>
+                <View style={{ backgroundColor: "black", flex: 1, flexDirection: 'column', justifyContent: 'space-between', }}>
+                    <View style={{
+                        flexDirection: "row", justifyContent: "space-between", alignItems: "center",
+                        backgroundColor: "#2d3436", width: "100%", borderBottomWidth: 0.2, borderBottomColor: "white"
+                    }}>
+                        <View style={{
+                            justifyContent: "center", alignItems: "center",
+                            flexDirection: "row", marginLeft: 15,
+                        }}>
+                            <Icon name="logo-usd" style={{ marginRight: 15, fontSize: 25, color: "white" }} />
+                            <Text style={{ marginLeft: 10, fontSize: 25, color: "white" }}>
+                                {this.state.waktu}
+                            </Text>
+                        </View>
+                        <Icon name="logo-usd" style={{ marginRight: 15, fontSize: 25, color: "white" }} />
+                    </View>
+                    <View style={{ borderBottomColor: "white", borderBottomWidth: 0.3, flexDirection: "row", alignItems: "center" }}>
+                        <Text style={{
+                            color: "white", marginLeft: 4, marginRight: 10,
+                            borderColor: "black", flexDirection: "row"
+                        }}>
+                            Selected Year
+                        </Text>
+                        <View style={{ backgroundColor: "#2d3436", color: "white", flexDirection: "row", alignItems: "center" }}>
+                            <Icon name="md-arrow-round-down" style={{ fontSize: 10, marginLeft: 10, backgroundColor: "#2d3436", color: "white" }} />
+                            <Picker
+                                selectedValue={this.state.thn}
+                                style={{ height: 30, width: "80%", backgroundColor: "#2d3436", color: "white" }}
+                                onValueChange={(itemValue, itemIndex) => this.pickerChange(itemValue,itemIndex)}>
+                                <Picker.Item label="Year" value="" />
+                                {
+                                    this.state.dataTahun.map(t => {
+                                        return (
+                                            <Picker.Item key={t.id} label={t.tahun} value={t.tahun} />
+                                        )
+                                    })
+                                }
+                            </Picker>
+                        </View>
+                    </View>
+                    <Content>
+                        <View style={styles.grid}>
+                            {
+                                this.state.dataCurrentYear.map(d => {
+                                    return (
+                                        <View key={d.bulan} style={styles.col}>
+                                            <TouchableOpacity style={{
+                                                width: "100%",
+                                                marginLeft: 15, marginRight: 15, marginTop: 3,
+                                            }}>
+                                                <View style={{ flexDirection: "row",backgroundColor:"#2d3436",borderTopLeftRadius: 7, borderTopRightRadius:7}}>
+                                                    <Icon name="logo-usd" style={{ marginLeft: 15, fontSize: 34, color: "white" }} />
+                                                    <Text style={{
+                                                        color: "white", marginLeft: 10, fontSize: 25,
+                                                        justifyContent: "center", alignItems: "center"
+                                                    }}>{d.bulan}</Text>
+                                                </View>
+                                                <View style={{ flexDirection: "row",backgroundColor: "#f5f6fa",borderBottomLeftRadius: 7, borderBottomRightRadius:7}}>
+                                                    <Icon name="logo-usd" style={{ marginLeft: 15, fontSize: 34, color: "#353b48" }} />
+                                                    <Text style={{
+                                                        color: "#353b48", marginLeft: 10, fontSize: 25,
+                                                        justifyContent: "center", alignItems: "center"
+                                                    }}>{d.biaya}</Text>
+                                                </View>
+                                            </TouchableOpacity>
+                                        </View>
+                                    )
+                                })
+                            }
+                        </View>
+                    </Content>
+                    <View style={{
+                        justifyContent: "center", flexDirection: "row",
+                        backgroundColor: "#353b48", width: "100%"
+                    }}>
 
-                    <Picker.Item label="Java" value="java" />
-                    <Picker.Item label="JavaScript" value="js" />
-
-                </Picker>
-
-                <Button
-                    title="Go to Details"
-                    onPress={() => {
-                        /* 1. Navigate to the Details route with params */
-                        this.props.navigation.navigate('Bul', {
-                            itemId: 86,
-                            otherParam: 'Siap 86',
-                        });
-                    }}
-                />
-                <Text> {this.state.language} </Text>
-                {
-                    this.state.dataTahun.map(t => {
-                        return (
-                            <View>
-                                <Text>{t.tahun}</Text>
-
-                            </View>
-
-                        )
-                    })
-                }
-            </View>
+                    </View>
+                </View>
+            </Container>
         );
     }
 }
-
+const styles = StyleSheet.create({
+    grid: {
+        flex: 1,
+        flexWrap: 'wrap',
+        flexDirection: 'row',
+        alignItems: 'center',
+        marginTop : 5,
+        justifyContent: 'space-between',
+    },
+    col: {
+        flexBasis: "45%",
+        borderWidth: 1,
+        alignItems: 'center',
+        borderColor: 'black',
+        margin: 5,
+    },
+});
 export default DataRekap;

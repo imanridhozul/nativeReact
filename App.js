@@ -38,7 +38,7 @@ const styles = StyleSheet.create({
 });
 const MyDrawerNavigator = createDrawerNavigator({
   Home: {
-    screen: ViewAllUser,
+    screen: DataRekap,
     navigationOptions: {
       drawerLabel: 'Beranda',
       drawerIcon: ({ tintColor }) => (
@@ -47,7 +47,7 @@ const MyDrawerNavigator = createDrawerNavigator({
     }
   },
   Catatan: {
-    screen: DataRekap,
+    screen: ViewAllUser,
     navigationOptions: {
       drawerLabel: 'Catatan',
       drawerIcon: ({ tintColor }) => (

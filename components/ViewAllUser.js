@@ -3,7 +3,8 @@ import { StatusBar,Image, TouchableOpacity, Dimensions, Button, ScrollView, Styl
 import { Container, Content, Footer, Header, Icon } from 'native-base';
 import { TextInput } from 'react-native-gesture-handler';
 import { openDatabase } from 'react-native-sqlite-storage';
-
+// select sum(biaya) as biaya,tahun from catatan group by tahun
+// select sum(biaya) as biaya,bulan from catatan where tahun='2019' group by bulan
 const screenHeight = Math.round(Dimensions.get('window').height);
 export default class ViewAllUser extends Component {    
     constructor(props) {        
@@ -47,6 +48,8 @@ export default class ViewAllUser extends Component {
                     tot = tot + x;
                 }
                 this.setState({
+                    pengeluaran:"",
+                    biaya:"",
                     curentPengeluaran: temp,
                     tt: tot
                 });
@@ -60,8 +63,9 @@ export default class ViewAllUser extends Component {
         var thn = d.getFullYear();
         var bln = months[d.getMonth()];
         var detik = d.getHours() + "/" + d.getMinutes() + "/" + d.getSeconds();
-        // var thn="2018";
-        // var tgl ="12/July/2018";
+        // var thn="2019";
+        // var tgl ="17/January/2019";
+        // var bln = "January"
         // console.warn(tgl,thn,bln,detik,this.state.pengeluaran,this.state.biaya);       
         this.state.db.transaction(tx => {
             tx.executeSql("insert into catatan (tanggal,tahun,bulan,jam,catatan,biaya)" +
@@ -74,7 +78,7 @@ export default class ViewAllUser extends Component {
         });
     }
     deleteData(id) {
-        console.warn(id);
+        // console.warn(id);
         this.state.db.transaction(tx => {
             tx.executeSql("DELETE FROM  catatan where id=?",
                 [id],
@@ -89,7 +93,7 @@ export default class ViewAllUser extends Component {
             edit: true,
             curentID: id
         })
-        console.warn(id);
+        // console.warn(id);
         this.state.db.transaction(tx => {
             tx.executeSql("select * from catatan where id=?",
                 [id],
@@ -98,7 +102,7 @@ export default class ViewAllUser extends Component {
                         biaya: results.rows.item(0).biaya,
                         pengeluaran: results.rows.item(0).catatan
                     })
-                    console.warn(results.rows.item(0).biaya);
+                    // console.warn(results.rows.item(0).biaya);
                 });
         });
     }
@@ -109,6 +113,7 @@ export default class ViewAllUser extends Component {
                 (tx, results) => {
                     this.setState({
                         biaya: "",
+                        edit : false,
                         pengeluaran: ""
                     })
                     this.refreshData();
@@ -142,7 +147,6 @@ export default class ViewAllUser extends Component {
                         {
                             this.state.curentPengeluaran.map((d, i) => {
                                 return (
-
                                     <View key={i} style={{ flexDirection: "row", backgroundColor: "#1e272e", margin: 3, borderRadius: 10 }}>
                                         <View style={{
                                             justifyContent: "center", alignItems: "center", margin: 8, marginLeft: 7,
@@ -192,7 +196,7 @@ export default class ViewAllUser extends Component {
                                                     fontSize: 12, color: "white",
                                                     fontStyle: "italic"
                                                 }}>
-                                                    {d.jam}
+                                                    {d.tahun}/{d.bulan}
                                                 </Text>
                                             </View>
                                         </View>

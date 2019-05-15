@@ -1,26 +1,221 @@
 import React, { Component } from 'react';
-import { View, Text } from 'react-native';
+import { TouchableOpacity, View, Text, Picker, StyleSheet } from 'react-native';
+import { Container, Content, Footer, Header, Icon } from 'native-base';
+import { openDatabase } from 'react-native-sqlite-storage';
+// import console = require('console');
 
 class DataBulan extends Component {
   constructor(props) {
     super(props);
+    const db = openDatabase({
+      name: 'catat.db',
+      location: 'default',
+      createFromLocation: '~www/catat.db',
+    });
+    var d = new Date();
+    var months = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
+    var tgl = d.getDate() + "/" + months[d.getMonth()] + "/" + d.getFullYear();
+    const { navigation } = this.props;
+    const bulan = navigation.getParam('bulan', "May");
+    const tahun = navigation.getParam('tahun', "2019");
     this.state = {
+      db,
+      dataPerBulan: [],
+      daftarBulan: [],
+      daftarTahun: [],
+      defaultBulan: bulan,
+      defaultYear: tahun,
+      total: ""
     };
   }
+  componentDidMount() {
+    this.refreshData();
+  }
+  refreshData = () => {
+    // console.warn(this.state.defaultBulan, this.state.defaultYear)
+    this.state.db.transaction(tx => {
+      tx.executeSql("select sum(biaya) as biaya,tanggal,bulan from catatan where tahun=? and bulan=? group by tanggal", [this.state.defaultYear, this.state.defaultBulan], (tx, results) => {
+        var temp = [];
+        let tot = 0;
+        for (let i = 0; i < results.rows.length; ++i) {
+          temp.push(results.rows.item(i));
+          let x = parseInt(results.rows.item(i).biaya);
+          tot = tot + x;
+        }
+        this.setState({
+          dataPerBulan: temp,
+          total: tot
+        });
+      });
+    });
+    this.state.db.transaction(tx => {
+      tx.executeSql("select sum(biaya) as biaya,bulan from catatan where tahun=? group by bulan", [this.state.defaultYear], (tx, results) => {
+        var temp = [];
+        let tot = 0;
+        for (let i = 0; i < results.rows.length; ++i) {
+          temp.push(results.rows.item(i));
+        }
+        this.setState({
+          daftarBulan: temp,
+        });
+      });
+    });
+    this.state.db.transaction(tx => {
+      tx.executeSql("SELECT * FROM catatan group by tahun", [], (tx, results) => {
+        var temp = [];
+        let tot = 0;
+        for (let i = 0; i < results.rows.length; ++i) {
+          temp.push(results.rows.item(i));
+        }
+        this.setState({
+          daftarTahun: temp,
+        });
+      });
+    });
+  }
+  pickerChange = (itemValue, itemIndex) => {
+    this.setState({ defaultBulan: itemValue }, () => this.refreshData())
+  }
+  pickerChangeTahun = (itemValue, itemIndex) => {
+    this.setState({ defaultYear: itemValue }, () => this.refreshData())
+  }
+  goString = (bilangan)=> {
+    var number_string = bilangan.toString(),
+        sisa = number_string.length % 3,
+        rupiah = number_string.substr(0, sisa),
+        ribuan = number_string.substr(sisa).match(/\d{3}/g);
 
+    if (ribuan) {
+        separator = sisa ? '.' : '';
+        rupiah += separator + ribuan.join('.');
+    }
+
+    // Cetak hasil
+   return rupiah; // Hasil: 23.456.789
+}
   render() {
-    const { navigation } = this.props;
-    const itemId = navigation.getParam('itemId', 'NO-ID');
-    const otherParam = navigation.getParam('otherParam', 'some default value');
     return (
-        <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
-        <Text>Details Screen</Text>
-        <Text>itemId: {JSON.stringify(itemId)}</Text>
-        <Text>otherParam: {JSON.stringify(otherParam)}</Text>
-        
-      </View>
+      <Container>
+        <View style={{ backgroundColor: "black", flex: 1, flexDirection: 'column', justifyContent: 'space-between', }}>
+          <View style={{
+            flexDirection: "row", justifyContent: "space-between", alignItems: "center",
+            backgroundColor: "#2d3436", width: "100%", height: 50
+          }}>
+            <View style={{
+              justifyContent: "center", alignItems: "center",
+              flexDirection: "row", marginLeft: 15,
+            }}>
+              <Icon onPress={() => this.props.navigation.openDrawer()} name="md-menu" style={{ fontSize: 35, color: "#FFFF00" }} />
+              <Text style={{ marginLeft: 10, fontSize: 25, color: "#FFFF00" }}>
+                {this.state.defaultBulan} / {this.state.defaultYear}
+              </Text>
+            </View>
+            <Icon name="logo-freebsd-devil" style={{ marginRight: 15, fontSize: 25, color: "#FFFF00" }} />
+          </View>
+          <View style={{ flexDirection: "row", alignItems: "center" }}>
+            <Text style={{
+              color: "white", marginLeft: 4, marginRight: 10,
+              flexDirection: "row"
+            }}>
+              Selected Month
+                        </Text>
+            <View style={{ backgroundColor: "#2d3436", color: "white", flexDirection: "row", alignItems: "center" }}>
+              <Icon name="md-arrow-dropdown-circle" style={{ fontSize: 15, marginLeft: 10, backgroundColor: "#2d3436", color: "white" }} />
+              <Picker
+                selectedValue={this.state.defaultBulan}
+                style={{ height: 30, width: "35%", backgroundColor: "#2d3436", color: "white" }}
+                onValueChange={(itemValue, itemIndex) => this.pickerChange(itemValue, itemIndex)}>
+                <Picker.Item label="Month" value="" />
+                {
+                  this.state.daftarBulan.map(t => {
+                    return (
+                      <Picker.Item key={t.bulan} label={t.bulan} value={t.bulan} />
+                    )
+                  })
+                }
+              </Picker>
+              <Icon name="md-arrow-dropdown-circle" style={{ fontSize: 15, marginLeft: 10, backgroundColor: "#2d3436", color: "white" }} />
+              <Picker
+                selectedValue={this.state.defaultYear}
+                style={{ height: 30, width: "35%", backgroundColor: "#2d3436", color: "white" }}
+                onValueChange={(itemValue, itemIndex) => this.pickerChangeTahun(itemValue, itemIndex)}>
+                <Picker.Item label="Year" value="" />
+                {
+                  this.state.daftarTahun.map(t => {
+                    return (
+                      <Picker.Item key={t.tahun} label={t.tahun} value={t.tahun} />
+                    )
+                  })
+                }
+              </Picker>
+            </View>
+          </View>
+          <Content>
+            <View style={styles.grid}>
+              {
+                this.state.dataPerBulan.map(d => {
+                  return (
+                    <View key={d.tanggal} style={styles.col}>
+                      <TouchableOpacity
+                        style={{
+                          width: "100%",
+                          marginLeft: 15, marginRight: 15, marginTop: 3,
+                        }}>
+                        <View style={{
+                          flexDirection: "row", backgroundColor: "#2d3436", borderTopLeftRadius: 7,
+                          borderTopRightRadius: 7, alignItems: "center"
+                        }}>
+                          <Icon name="md-calendar" style={{ marginLeft: 15, fontSize: 15, color: "white" }} />
+                          <Text style={{
+                            color: "white", marginLeft: 10, fontSize: 12,
+                            justifyContent: "center", alignItems: "center", flex: 1
+                          }}>{d.tanggal}</Text>
+                        </View>
+                        <View style={{
+                          flexDirection: "row", backgroundColor: "#f5f6fa", borderBottomLeftRadius: 7,
+                          borderBottomRightRadius: 7, alignItems: "center"
+                        }}>
+                          <Icon name="md-calculator" style={{ marginLeft: 15, fontSize: 15, color: "#353b48" }} />
+                          <Text style={{
+                            color: "#353b48", marginLeft: 10, fontSize: 12,
+                            justifyContent: "center", alignItems: "center"
+                          }}>{this.goString(d.biaya)}</Text>
+                        </View>
+                      </TouchableOpacity>
+                    </View>
+                  )
+                })
+              }
+            </View>
+          </Content>
+          <View style={{
+            justifyContent: "center", flexDirection: "row",
+            backgroundColor: "#2d3436", width: "100%"
+          }}>
+            <Text style={{ color: "#FFFF00" }}>
+              Total : {this.goString(this.state.total)}
+            </Text>
+          </View>
+        </View>
+      </Container>
     );
   }
 }
-
+const styles = StyleSheet.create({
+  grid: {
+    flex: 1,
+    flexWrap: 'wrap',
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginTop: 5,
+    justifyContent: 'space-between',
+  },
+  col: {
+    flexBasis: "45%",
+    borderWidth: 1,
+    alignItems: 'center',
+    borderColor: 'black',
+    margin: 5,
+  },
+});
 export default DataBulan;

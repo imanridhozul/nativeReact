@@ -1,15 +1,15 @@
 import React, { Component } from 'react';
-import { StatusBar,Image, TouchableOpacity, Dimensions, Button, ScrollView, StyleSheet, Text, View } from 'react-native';
+import { StatusBar, Image, TouchableOpacity, Dimensions, Button, ScrollView, StyleSheet, Text, View } from 'react-native';
 import { Container, Content, Footer, Header, Icon } from 'native-base';
 import { TextInput } from 'react-native-gesture-handler';
 import { openDatabase } from 'react-native-sqlite-storage';
 // select sum(biaya) as biaya,tahun from catatan group by tahun
 // select sum(biaya) as biaya,bulan from catatan where tahun='2019' group by bulan
 // select sum(biaya) as biaya,tanggal,bulan from catatan where tahun='2019' and bulan='May' group by tanggal //ini biaya perbulannya ada tanggal2nya
-// select * from catatan where tanggal='13/may/2019' per tangggal
+// select * from catatan where tanggal='13/may/2019' per tangggal # FF 9800
 const screenHeight = Math.round(Dimensions.get('window').height);
-export default class ViewAllUser extends Component {       
-    constructor(props) {        
+export default class ViewAllUser extends Component {
+    constructor(props) {
         super(props);
         const db = openDatabase({
             name: 'catat.db',
@@ -50,8 +50,8 @@ export default class ViewAllUser extends Component {
                     tot = tot + x;
                 }
                 this.setState({
-                    pengeluaran:"",
-                    biaya:"",
+                    pengeluaran: "",
+                    biaya: "",
                     curentPengeluaran: temp,
                     tt: tot
                 });
@@ -64,7 +64,7 @@ export default class ViewAllUser extends Component {
         var tgl = d.getDate() + "/" + months[d.getMonth()] + "/" + d.getFullYear();
         var thn = d.getFullYear();
         var bln = months[d.getMonth()];
-        var detik = d.getHours() + "/" + d.getMinutes() + "/" + d.getSeconds();
+        var detik = d.getHours() + ":" + d.getMinutes() + ":" + d.getSeconds();
         // var thn="2019";
         // var tgl ="17/January/2019";
         // var bln = "January"
@@ -74,7 +74,7 @@ export default class ViewAllUser extends Component {
                 "values ('" + tgl + "','" + thn + "','" + bln + "','" + detik + "','" + this.state.pengeluaran + "','" + this.state.biaya + "')",
                 [],
                 (tx, results) => {
-                   // console.warn("berhasil tambah data");
+                    // console.warn("berhasil tambah data");
                     this.refreshData();
                 });
         });
@@ -108,14 +108,14 @@ export default class ViewAllUser extends Component {
                 });
         });
     }
-    editData=()=> {       
+    editData = () => {
         this.state.db.transaction(tx => {
             tx.executeSql("UPDATE catatan set catatan=?, biaya=? where id=?",
-                [this.state.pengeluaran,this.state.biaya,this.state.curentID],
+                [this.state.pengeluaran, this.state.biaya, this.state.curentID],
                 (tx, results) => {
                     this.setState({
                         biaya: "",
-                        edit : false,
+                        edit: false,
                         pengeluaran: ""
                     })
                     this.refreshData();
@@ -123,9 +123,23 @@ export default class ViewAllUser extends Component {
                 });
         });
     }
+    goString = (bilangan)=> {
+        var number_string = bilangan.toString(),
+            sisa = number_string.length % 3,
+            rupiah = number_string.substr(0, sisa),
+            ribuan = number_string.substr(sisa).match(/\d{3}/g);
+
+        if (ribuan) {
+            separator = sisa ? '.' : '';
+            rupiah += separator + ribuan.join('.');
+        }
+
+        // Cetak hasil
+       return rupiah; // Hasil: 23.456.789
+    }
     render() {
         return (
-            <Container>                
+            <Container>
                 <View style={{ backgroundColor: "black", flex: 1, flexDirection: 'column', justifyContent: 'space-between', }}>
                     <View style={{
                         flexDirection: "row", justifyContent: "space-between", alignItems: "center",
@@ -136,12 +150,12 @@ export default class ViewAllUser extends Component {
                             justifyContent: "center", alignItems: "center",
                             flexDirection: "row", marginLeft: 15,
                         }}>
-                            <Icon onPress={()=>this.props.navigation.openDrawer()} name="md-menu" style={{ fontSize: 35, color: "#FF9800" }} />
-                            <Text style={{ marginLeft: 10, fontSize: 25, color: "#FF9800" }}>
+                            <Icon onPress={() => this.props.navigation.openDrawer()} name="md-menu" style={{ fontSize: 35, color: "#FFFF00" }} />
+                            <Text style={{ marginLeft: 10, fontSize: 25, color: "#FFFF00" }}>
                                 {this.state.waktu}
                             </Text>
                         </View>
-                        <Icon name="logo-freebsd-devil" style={{ marginRight: 15, fontSize: 25, color: "#FF9800" }} />
+                        <Icon name="logo-freebsd-devil" style={{ marginRight: 15, fontSize: 25, color: "#FFFF00" }} />
 
                     </View>
                     <Content>
@@ -172,32 +186,35 @@ export default class ViewAllUser extends Component {
                                                     <TouchableOpacity
                                                         onPress={() => this.getById(d.id)}
                                                         style={{ justifyContent: "center", alignItems: "center", marginLeft: 3 }}>
-                                                        <Icon name="md-create" style={{ color: "#FF9800" }} />
+                                                        <Icon name="md-create" style={{ color: "#FFFF00" }} />
                                                     </TouchableOpacity>
                                                     <TouchableOpacity
                                                         onPress={() => this.deleteData(d.id)}
                                                         style={{ justifyContent: "center", alignItems: "center" }}>
-                                                        <Icon name="trash" style={{ color: "#FF9800" }} />
+                                                        <Icon name="trash" style={{ color: "#FFFF00" }} />
                                                     </TouchableOpacity>
                                                 </View>
                                             </View>
 
                                             <View style={{
                                                 borderTopWidth: 5, borderTopColor: '#d2dae2', flexDirection: "row",
-                                                justifyContent: "space-between", alignItems: "center"
+                                                alignItems: "center", justifyContent: "space-between"
                                             }}>
-                                                <Text style={{
-                                                    justifyContent: "center",
-                                                    fontSize: 15, color: "white"
-                                                }}>
-                                                    Harga : {d.biaya}
-                                                </Text>
+                                                <View style={{ flexDirection: "row", alignItems: "center" }}>
+                                                    <Icon name="logo-bitcoin" style={{ justifyContent: "center", color: "#d2dae2" }} />
+                                                    <Text style={{
+                                                        justifyContent: "center",
+                                                        fontSize: 15, color: "white", marginLeft: 10
+                                                    }}>
+                                                        {this.goString(d.biaya)}
+                                                    </Text>
+                                                </View>
                                                 <Text style={{
                                                     marginRight: 20, justifyContent: "center",
                                                     fontSize: 12, color: "white",
                                                     fontStyle: "italic"
                                                 }}>
-                                                    {d.tahun}/{d.bulan}
+                                                    {d.jam}
                                                 </Text>
                                             </View>
                                         </View>
@@ -214,7 +231,7 @@ export default class ViewAllUser extends Component {
                         }}>
                             <Text style={[styles.textTot, { alignItems: "center", marginLeft: 25, marginRight: 25 }]}>
                                 >>  Total : {
-                                    this.state.tt
+                                    this.goString(this.state.tt)
                                 }
                             </Text>
                         </View>
@@ -266,7 +283,7 @@ const styles = StyleSheet.create({
         color: "#2f3640",
         justifyContent: "center",
         alignItems: 'center',
-        backgroundColor: "#FF9800",
+        backgroundColor: "#FFFF00",
         flexDirection: "row",
         borderBottomWidth: 4, borderBottomColor: "#353b48",
         borderTopWidth: 4, borderTopColor: "#353b48",
@@ -284,8 +301,8 @@ const styles = StyleSheet.create({
     textTot: {
         marginLeft: 3,
         backgroundColor: "#1e272e",
-        color: "#FF9800", fontSize: 25,
-        borderBottomWidth: 4, borderBottomColor: "#FF9800",
+        color: "#FFFF00", fontSize: 25,
+        borderBottomWidth: 4, borderBottomColor: "#FFFF00",
         flex: 1, borderRadius: 10
     },
 

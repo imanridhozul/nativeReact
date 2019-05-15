@@ -67,10 +67,13 @@ const MyDrawerNavigator = createDrawerNavigator({
       )
     }
   },
-  Bul: {
+  Bulan: {
     screen: DataBulan,
     navigationOptions: {
-      drawerLabel: () => null,
+      drawerLabel: 'Bulanan',
+      drawerIcon: ({ tintColor }) => (
+        <Icon name="md-calendar" style={{ fontSize: 25, color: tintColor }} />
+      )
     }
   },
 
@@ -79,6 +82,7 @@ const MyDrawerNavigator = createDrawerNavigator({
     initialRouteName: 'Home',
     drawerPosition: 'left',
     contentComponent: CustomContent,
+    unmountInactiveRoutes:true,
     drawerOpenRoute: 'DrawerOpen',
     drawerCloseRoute: 'DrawerClose',
     drawerToggleRoute: 'DrawerToggle',

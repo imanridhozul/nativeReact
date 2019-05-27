@@ -16,8 +16,8 @@ class DataBulan extends Component {
     var months = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
     var tgl = d.getDate() + "/" + months[d.getMonth()] + "/" + d.getFullYear();
     const { navigation } = this.props;
-    const bulan = navigation.getParam('bulan', "May");
-    const tahun = navigation.getParam('tahun', "2019");
+    const bulan = navigation.getParam('bulan', months[d.getMonth()]);
+    const tahun = navigation.getParam('tahun', d.getFullYear());
     this.state = {
       db,
       dataPerBulan: [],
@@ -34,7 +34,7 @@ class DataBulan extends Component {
   refreshData = () => {
     // console.warn(this.state.defaultBulan, this.state.defaultYear)
     this.state.db.transaction(tx => {
-      tx.executeSql("select sum(biaya) as biaya,tanggal,bulan from catatan where tahun=? and bulan=? group by tanggal", [this.state.defaultYear, this.state.defaultBulan], (tx, results) => {
+      tx.executeSql("select sum(biaya) as biaya,tanggal,bulan,tahun from catatan where tahun=? and bulan=? group by tanggal", [this.state.defaultYear, this.state.defaultBulan], (tx, results) => {
         var temp = [];
         let tot = 0;
         for (let i = 0; i < results.rows.length; ++i) {
@@ -79,20 +79,20 @@ class DataBulan extends Component {
   pickerChangeTahun = (itemValue, itemIndex) => {
     this.setState({ defaultYear: itemValue }, () => this.refreshData())
   }
-  goString = (bilangan)=> {
+  goString = (bilangan) => {
     var number_string = bilangan.toString(),
-        sisa = number_string.length % 3,
-        rupiah = number_string.substr(0, sisa),
-        ribuan = number_string.substr(sisa).match(/\d{3}/g);
+      sisa = number_string.length % 3,
+      rupiah = number_string.substr(0, sisa),
+      ribuan = number_string.substr(sisa).match(/\d{3}/g);
 
     if (ribuan) {
-        separator = sisa ? '.' : '';
-        rupiah += separator + ribuan.join('.');
+      separator = sisa ? '.' : '';
+      rupiah += separator + ribuan.join('.');
     }
 
     // Cetak hasil
-   return rupiah; // Hasil: 23.456.789
-}
+    return rupiah; // Hasil: 23.456.789
+  }
   render() {
     return (
       <Container>
@@ -157,6 +157,13 @@ class DataBulan extends Component {
                   return (
                     <View key={d.tanggal} style={styles.col}>
                       <TouchableOpacity
+                        onPress={() => {
+                          this.props.navigation.navigate('Home', {
+                            bulan: d.bulan,
+                            tahun: d.tahun,
+                            tanggal: d.tanggal,
+                          });
+                        }}
                         style={{
                           width: "100%",
                           marginLeft: 15, marginRight: 15, marginTop: 3,

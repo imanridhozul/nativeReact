@@ -1,5 +1,5 @@
 import React from 'react';
-import { Image,StyleSheet, Button, View, Text, StatusBar } from 'react-native';
+import { Image, StyleSheet, Button, View, Text, StatusBar } from 'react-native';
 import { createAppContainer, createDrawerNavigator, createStackNavigator, DrawerItems } from 'react-navigation'; // Version can be specified in package.json
 
 import HelloStaff from './components/HelloStaff';
@@ -8,6 +8,8 @@ import MapsAwal from './components/MapsAwal';
 import ViewAllUser from './components/ViewAllUser';
 import DataRekap from './components/DataRekap';
 import DataBulan from './components/DataBulan';
+import Credit from './components/Credit';
+import SplashScreen from './components/SplashScreen';
 
 
 const CustomContent = (props) => {
@@ -16,9 +18,9 @@ const CustomContent = (props) => {
       {/* <StatusBar backgroundColor="black" barStyle="light-content" /> */}
       <Header style={{ backgroundColor: 'white', height: 100 }}>
         <StatusBar backgroundColor="black" barStyle="light-content" />
-        <View style={{justifyContent:"center", alignItems:"center"}}>
-         <Image source={require('./assets/logo.png')} style={{width: 150, height: 100}} />
-         </View>
+        <View style={{ justifyContent: "center", alignItems: "center" }}>
+          <Image source={require('./assets/logo.png')} style={{ width: 150, height: 100 }} />
+        </View>
       </Header>
       <Content style={{ backgroundColor: '#1e272e' }}>
         <DrawerItems {...props} />
@@ -76,33 +78,64 @@ const MyDrawerNavigator = createDrawerNavigator({
       )
     }
   },
+  Credit: {
+    screen: Credit,
+    navigationOptions: {
+      drawerLabel: 'Creditt',
+      drawerIcon: ({ tintColor }) => (
+        <Icon name="md-person" style={{ fontSize: 25, color: tintColor }} />
+      )
+    }
+  },
 
 
 }, {
     initialRouteName: 'Home',
     drawerPosition: 'left',
     contentComponent: CustomContent,
-    unmountInactiveRoutes:true,
+    unmountInactiveRoutes: true,
     drawerOpenRoute: 'DrawerOpen',
     drawerCloseRoute: 'DrawerClose',
     drawerToggleRoute: 'DrawerToggle',
     contentOptions: {
-      inactiveTintColor:"white",
-      activeBackgroundColor: "black",    
+      inactiveTintColor: "white",
+      activeBackgroundColor: "black",
       activeTintColor: '#FF9800',
       labelStyle: {
         color: "white"
       }
     }
   },
-
 );
+
 
 
 const AppContainer = createAppContainer(MyDrawerNavigator);
 export default class App extends React.Component {
-  render() {
-    return <AppContainer />;
+  constructor(props) {
+    super(props);
+    this.state = {
+      view: <SplashScreen />
+    };
+  }  
+  componentWillMount() {
+    setTimeout(() => {
+      //IF FALSE NAVIGATE TO ERROR
+      if (true) {
+        this.setState({
+          view: <AppContainer />
+        })
+      }
+    }, 800) //TIME OF WAITING
   }
+  render() {
+    return (
+      this.state.view
+    )
+  }
+
+  // render() {
+  //   return <AppContainer />;
+  // }
 }
 

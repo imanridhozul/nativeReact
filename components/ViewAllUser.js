@@ -1,8 +1,9 @@
 import React, { Component } from 'react';
-import { StatusBar, Image, TouchableOpacity, Dimensions, Button, ScrollView, StyleSheet, Text, View } from 'react-native';
+import { StatusBar, Image, TouchableOpacity, Dimensions, Button, BackHandler, StyleSheet, Text, View } from 'react-native';
 import { Container, Content, Footer, Header, Icon } from 'native-base';
 import { TextInput } from 'react-native-gesture-handler';
 import { openDatabase } from 'react-native-sqlite-storage';
+
 // select sum(biaya) as biaya,tahun from catatan group by tahun
 // select sum(biaya) as biaya,bulan from catatan where tahun='2019' group by bulan
 // select sum(biaya) as biaya,tanggal,bulan from catatan where tahun='2019' and bulan='May' group by tanggal //ini biaya perbulannya ada tanggal2nya
@@ -18,8 +19,12 @@ export default class ViewAllUser extends Component {
         });
         var d = new Date();
         var months = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
-        months[d.getMonth()];
         var tgl = d.getDate() + "/" + months[d.getMonth()] + "/" + d.getFullYear();
+        const { navigation } = this.props;
+        const bulan = navigation.getParam('bulan', months[d.getMonth()]);
+        const tahun = navigation.getParam('tahun', d.getFullYear());
+        const tanggal = navigation.getParam('tanggal', tgl);
+
         this.state = {
             db,
             pengeluaran: "",
@@ -28,20 +33,29 @@ export default class ViewAllUser extends Component {
             edit: false,
             curentID: "",
             waktu: tgl,
-            tt: 0
+            tt: 0,
+            dTahun: tahun,
+            dTanggal: tanggal,
+            dBulan: bulan,
+            colorPrimary : "#3742fa"
         };
     }
     componentDidMount() {
         this.refreshData();
+        BackHandler.addEventListener('hardwareBackPress', this.handleBackPress);
+
     }
+    componentWillUnmount() {
+        BackHandler.removeEventListener('hardwareBackPress', this.handleBackPress);
+    }
+    handleBackPress = () => {
+        // console.warn("back");
+    }
+
     refreshData = () => {
-        var d = new Date();
-        var months = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
-        months[d.getMonth()];
-        let tgl = d.getDate() + "/" + months[d.getMonth()] + "/" + d.getFullYear();
         // var sql = "SELECT * FROM catatan where tanggal='"+t+"'";     
         this.state.db.transaction(tx => {
-            tx.executeSql("SELECT * FROM catatan where tanggal=?", [tgl], (tx, results) => {
+            tx.executeSql("SELECT * FROM catatan where tanggal=?", [this.state.dTanggal], (tx, results) => {
                 var temp = [];
                 let tot = 0;
                 for (let i = 0; i < results.rows.length; ++i) {
@@ -60,10 +74,6 @@ export default class ViewAllUser extends Component {
     }
     addData = () => {
         var d = new Date();
-        var months = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
-        var tgl = d.getDate() + "/" + months[d.getMonth()] + "/" + d.getFullYear();
-        var thn = d.getFullYear();
-        var bln = months[d.getMonth()];
         var detik = d.getHours() + ":" + d.getMinutes() + ":" + d.getSeconds();
         // var thn="2019";
         // var tgl ="17/January/2019";
@@ -71,7 +81,7 @@ export default class ViewAllUser extends Component {
         // console.warn(tgl,thn,bln,detik,this.state.pengeluaran,this.state.biaya);       
         this.state.db.transaction(tx => {
             tx.executeSql("insert into catatan (tanggal,tahun,bulan,jam,catatan,biaya)" +
-                "values ('" + tgl + "','" + thn + "','" + bln + "','" + detik + "','" + this.state.pengeluaran + "','" + this.state.biaya + "')",
+                "values ('" + this.state.dTanggal + "','" + this.state.dTahun + "','" + this.state.dBulan + "','" + detik + "','" + this.state.pengeluaran + "','" + this.state.biaya + "')",
                 [],
                 (tx, results) => {
                     // console.warn("berhasil tambah data");
@@ -123,7 +133,7 @@ export default class ViewAllUser extends Component {
                 });
         });
     }
-    goString = (bilangan)=> {
+    goString = (bilangan) => {
         var number_string = bilangan.toString(),
             sisa = number_string.length % 3,
             rupiah = number_string.substr(0, sisa),
@@ -135,7 +145,7 @@ export default class ViewAllUser extends Component {
         }
 
         // Cetak hasil
-       return rupiah; // Hasil: 23.456.789
+        return rupiah; // Hasil: 23.456.789
     }
     render() {
         return (
@@ -150,12 +160,12 @@ export default class ViewAllUser extends Component {
                             justifyContent: "center", alignItems: "center",
                             flexDirection: "row", marginLeft: 15,
                         }}>
-                            <Icon onPress={() => this.props.navigation.openDrawer()} name="md-menu" style={{ fontSize: 35, color: "#FFFF00" }} />
-                            <Text style={{ marginLeft: 10, fontSize: 25, color: "#FFFF00" }}>
-                                {this.state.waktu}
+                            <Icon onPress={() => this.props.navigation.openDrawer()} name="md-menu" style={{ fontSize: 35, color: "#ffa502" }} />
+                            <Text style={{ marginLeft: 10, fontSize: 25, color: "#ffa502" }}>
+                                {this.state.dTanggal}
                             </Text>
                         </View>
-                        <Icon name="logo-freebsd-devil" style={{ marginRight: 15, fontSize: 25, color: "#FFFF00" }} />
+                        <Icon name="logo-freebsd-devil" style={{ marginRight: 15, fontSize: 25, color: "#ffa502" }} />
 
                     </View>
                     <Content>
@@ -186,12 +196,12 @@ export default class ViewAllUser extends Component {
                                                     <TouchableOpacity
                                                         onPress={() => this.getById(d.id)}
                                                         style={{ justifyContent: "center", alignItems: "center", marginLeft: 3 }}>
-                                                        <Icon name="md-create" style={{ color: "#FFFF00" }} />
+                                                        <Icon name="md-create" style={{ color: "#ffa502" }} />
                                                     </TouchableOpacity>
                                                     <TouchableOpacity
                                                         onPress={() => this.deleteData(d.id)}
                                                         style={{ justifyContent: "center", alignItems: "center" }}>
-                                                        <Icon name="trash" style={{ color: "#FFFF00" }} />
+                                                        <Icon name="trash" style={{ color: "#ffa502" }} />
                                                     </TouchableOpacity>
                                                 </View>
                                             </View>
@@ -283,7 +293,7 @@ const styles = StyleSheet.create({
         color: "#2f3640",
         justifyContent: "center",
         alignItems: 'center',
-        backgroundColor: "#FFFF00",
+        backgroundColor: "#ffa502",
         flexDirection: "row",
         borderBottomWidth: 4, borderBottomColor: "#353b48",
         borderTopWidth: 4, borderTopColor: "#353b48",
@@ -301,8 +311,8 @@ const styles = StyleSheet.create({
     textTot: {
         marginLeft: 3,
         backgroundColor: "#1e272e",
-        color: "#FFFF00", fontSize: 25,
-        borderBottomWidth: 4, borderBottomColor: "#FFFF00",
+        color: "#ffa502", fontSize: 25,
+        borderBottomWidth: 4, borderBottomColor: "#ffa502",
         flex: 1, borderRadius: 10
     },
 

@@ -92,7 +92,7 @@ class DataRekap extends Component {
                             <Icon onPress={() => this.props.navigation.openDrawer()} name="md-menu" style={{ fontSize: 35, color: "#FFFF00" }} />
                             <Text style={{ marginLeft: 10, fontSize: 25, color: "#FFFF00" }}>
                                 {this.state.waktu}
-                            </Text>DDD
+                            </Text>
                         </View>
                         <Icon name="logo-freebsd-devil" style={{ marginRight: 15, fontSize: 25, color: "#FFFF00" }} />
                     </View>
